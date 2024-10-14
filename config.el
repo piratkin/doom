@@ -147,9 +147,60 @@
 ;; Disable slowdown when holding keys
 (setq auto-repeat-fast nil)
 
-;; Bind C-j/C-k to scroll one line down/up in normal mode.
-(define-key evil-normal-state-map (kbd "M-j") 'evil-scroll-down)
-(define-key evil-normal-state-map (kbd "M-k") 'evil-scroll-up)
+;; (custom-set-faces
+;;  '(evil-visual-state ((t (:background "blue" :foreground "red")))))
+
+;; (custom-set-faces
+;;  '(region ((t (:background "red" :foreground "blue")))))
+
+(setq fringe-mode 10)
+(setq gdb-display-breakpoints-as-icons nil)
+;; (set-fringe-bitmap-face 'breakpoint-enabled 'warning)
+;; (set-fringe-bitmap-face 'breakpoint-disabled 'error)
+;; (custom-set-faces
+;;  '(gdb-breakpoint-face ((t (:foreground "red" :weight bold))))  ;; Цвет активной точки останова
+;;  '(gdb-enabled-breakpoint-face ((t (:foreground "red" :weight bold))))
+;;  '(gdb-disabled-breakpoint-face ((t (:foreground "gray" :weight bold))))  ;; Цвет отключенной точки останова
+;;  )
+(custom-set-faces
+  '(isearch ((t (:background "gray30" :foreground "white"))))         ;; Текущий результат поиска
+  '(lazy-highlight ((t (:background "gray40" :foreground "white"))))  ;; Остальные совпадения
+  '(evil-visual-highlight ((t (:background "gray30" :foreground "white")))) ;; Выделение в evil
+)
+
+(use-package evil
+  :ensure t
+  :init
+  (evil-mode 1)
+  :bind*
+  (("M-j" . evil-scroll-down)
+   ("M-о" . evil-scroll-down)
+   ("M-k" . evil-scroll-up)
+   ("M-л" . evil-scroll-up))
+  :bind
+  (:map evil-normal-state-map
+   ("з" . evil-paste-after)
+   ("н" . evil-yank)
+   ("Ф" . evil-append-line)
+   ("Ш" . evil-insert-line)
+   ("с" . evil-change)
+   ("к" . evil-replace)
+   ("в" . evil-delete)
+   ("ч" . evil-delete-char)
+   ("г" . evil-undo)
+   ("ш" . evil-insert)
+   ("щ" . evil-open-below)
+   :map evil-motion-state-map
+   ("Ж" . evil-ex)
+   ("л" . evil-previous-line)
+   ("о" . evil-next-line)
+   ("р" . evil-backward-char)
+   ("д" . evil-forward-char)
+   ("м" . evil-visual-char)
+   ("М" . evil-visual-line)
+   ("т" . evil-ex-search-next)
+   ("Т" . evil-ex-search-previous)
+   ("н" . evil-yank)))
 
 ;; Configure DAP & UI Mode
 (use-package dap-mode
@@ -160,15 +211,16 @@
   (require 'dap-gdb-lldb)
   (require 'dap-cpptools)
   (require 'dap-hydra)
-  (setq dap-auto-configure-mode t
-        ;; dap-auto-show-output nil
-        ;; gdb-many-windows nil
-        dap-auto-configure-features '(sessions locals))
-  ;; (dap-tooltip-mode t)
-  ;; (tooltip-mode t)
-  ;; (gdb-many-windows t)
-  ;; (dap-ui-controls-mode t)
-  (dap-ui-mode t)
+  (setq dap-auto-configure-features '(sessions locals)
+        dap-auto-configure-mode t
+        dap-auto-show-output nil
+        dap-ui-controls-mode nil
+        dap-ui-mode t
+        gdb-many-windows nil
+        dap-print-io nil
+        ;; tooltip-mode nil
+        dap-tooltip-mode nil
+        doom-debug-mode t)
   (dap-gdb-lldb-setup)
   (dap-cpptools-setup)
   ;; (load-theme 'doom-tomorrow-night t)
@@ -192,8 +244,7 @@
     ;; (kbd "SPC d D") 'dap-breakpoint-delete-all)
   )
 
-(fringe-mode 5)
-
+;; (fringe-mode 5)
 ;; (setq fringes-outside-margins t)
 ;; (setq dap-ui-use-fringe t)
 
@@ -201,7 +252,7 @@
  "cpptools::samba"
  (list :type "cppdbg"
        :request "launch"
-       :program "/app/inno-samba/sbin/samba"
+       :program "/app/samba/sbin/samba"
        :cwd "/home/user/Work/samba"
        :MIMode "gdb"
        :targetArchitecture "x86_64"
@@ -240,7 +291,7 @@
  (list :type "gdb"
        :request "launch"
        :target "samba"
-       :cwd "/app/inno-samba/sbin"
+       :cwd "/app/samba/sbin"
        :args [
            "--foreground"
            "--debuglevel=10"
@@ -259,280 +310,3 @@
               (:description "Follow child process"
                :text "set follow-fork-mode child")]))
 
-
-
-;; ;; Template for DDB Inno-Samba
-;; (dap-register-debug-template
-;;   "gdb:samba - debug minimal"
-;;    (list :type "gdb"
-;;          :request "launch"
-;;          :name "gdb:samba"
-;;          :gdbpath "rust-gdb"
-;;          :target nil
-;;          :cwd nil))
-
-;; ;; Template for DDB Inno-Samba
-;; (dap-register-debug-template
-;;   "gdb:samba - debug template"
-;;    (list :type "gdb"
-;;          :request "launch"
-;;          :name "gdb:samba"
-;;          :program "samba"
-;;          :args '("--foreground"
-;;                  "--no-process-group"
-;;                  "--debug-stdout"
-;;                  "--debuglevel=10")
-;;          :cwd "/app/inno-samba/sbin"
-;;          :MIMode "gdb"
-;;          :miDebuggerPath "/usr/bin/gdb"
-;;          ;; ::gdbpath "/usr/bin/gdb"
-;;          :environment []
-;;          :setupCommands '(
-;;              (:description "Enable pretty printing"
-;;               :text "-enable-pretty-printing")
-;;              (:description "Disassembly Flavor to Intel"
-;;               :text "-gdb-set disassembly-flavor intel")
-;;              (:description "Follow child process"
-;;               :text "set follow-fork-mode child")
-;;              (:text "set target-async off"))
-;;          :stop-on-entry t))
-
-;; ;; Template for CPPGDB Inno-Samba
-;; (dap-register-debug-template
-;;   "cppgdb:samba - debug template"
-;;    (list :type "cppgdb"
-;;          :request "launch"
-;;          :name "cppgdb:samba"
-;;          :program "/app/inno-samba/sbin/samba"
-;;          :args '("--foreground"
-;;                  "--no-process-group"
-;;                  "--debug-stdout"
-;;                  "--debuglevel=10")
-;;          :cwd (lsp-workspace-root)
-;;          :externalConsole nil
-;;          :MIMode "gdb"
-;;          :miDebuggerPath "gdb"
-;;          :environment []
-;;          :setupCommands nil
-;;          :target nil
-;;          :stopOnEntry t))
-
-
-;; (dap-register-debug-template
-;;   "Debug Samba with Breakpoint on Start"
-;;    (list :type "gdb"
-;;          :request "launch"
-;;          :name "Samba with Breakpoint"
-;;          :program "/app/inno-samba/sbin/samba"
-;;          :args '("--foreground" "--no-process-group" "--debug-stdout" "-d10")
-;;          :cwd (file-name-directory "/app/inno-samba/sbin")
-;;          :stop-on-entry t
-;;          :setupCommands '(
-;;              (:text "-enable-pretty-printing"
-;;               :description "Enable pretty printing")
-;;              (:text "set follow-fork-mode child"
-;;               :description "Follow child process")
-;;              (:text "set detach-on-fork off"
-;;               :description "Don't detach forked processes")
-;;              (:text "break main"
-;;               :description "Stop at main function"))))
-
-;; (dap-register-debug-template
-;;    "Inno-Samba"
-;;    (list :type "gdb"
-;;          :request "launch"
-;;          :program "/app/inno-samba/sbin/samba"
-;;          :MIMode "gdb"
-;;          :miDebuggerPath "gdb"
-;;          :args '("--foreground"
-;;                  "--debuglevel=10"
-;;                  "--no-process-group"
-;;                  "--debug-stdout")
-;;          :cwd (file-name-directory "/app/inno-samba/sbin")
-;;          :stop-on-entry t
-;;          :setupCommands [
-;;                 (:description "Enable pretty-printing for gdb"
-;;                  :text "-enable-pretty-printing"
-;;                  :ignoreFailures t)
-;;                 (:description "Stop at main function"
-;;                  :text "Break on main")
-;;                 (:description "Don't detach forked processes"
-;;                  :text "set detach-on-fork off")
-;;                 (:description "Follow child process"
-;;                  :text "set follow-fork-mode child")
-;;                 (:description "Set Disassembly Flavor to Intel"
-;;                  :text "-gdb-set disassembly-flavor intel"
-;;                  :ignoreFailures t)]))
-
-
-;; (dap-register-debug-template
-;;    "Inno-Samba"
-;;    (list :type "gdb"
-;;          :request "launch"
-;;          :cwd "/app/inno-samba/sbin"
-;;          :target "/usr/bin/sudo /app/inno-samba/sbin/samba --foreground --debuglevel=10 --no-process-group --debug-stdout"
-;;          ;; :MIMode "gdb"
-;;          ;; :miDebuggerPath "gdb"
-;;          ;; :args '("--foreground"
-;;          ;;         "--debuglevel=10"
-;;          ;;         "--no-process-group"
-;;          ;;         "--debug-stdout")
-;;          ;; :cwd (file-name-directory "/app/inno-samba/sbin")
-;;          ;; :stop-on-entry t
-;;          ;; :setupCommands [
-;;          ;;        (:description "Enable pretty-printing for gdb"
-;;          ;;         :text "-enable-pretty-printing"
-;;          ;;         :ignoreFailures t)
-;;          ;;        (:description "Stop at main function"
-;;          ;;         :text "Break on main")
-;;          ;;        (:description "Don't detach forked processes"
-;;          ;;         :text "set detach-on-fork off")
-;;          ;;        (:description "Follow child process"
-;;          ;;         :text "set follow-fork-mode child")
-;;          ;;        (:description "Set Disassembly Flavor to Intel"
-;;          ;;         :text "-gdb-set disassembly-flavor intel"
-;;          ;;         :ignoreFailures t)]
-;;          ))
-
-;; (dap-register-debug-template
-;;    "Inno-Samba"
-;;    (list :type "cppdbg"
-;;          :request "launch"
-;;          :cwd "/app/inno-samba/sbin"
-;;          :program "/app/inno-samba/sbin/samba --foreground --debuglevel=10 --no-process-group --debug-stdout"
-;;          :MIMode "gdb"
-;;          ;; :miDebuggerPath "gdb"
-;;          ;; :args '("--foreground"
-;;          ;;         "--debuglevel=10"
-;;          ;;         "--no-process-group"
-;;          ;;         "--debug-stdout")
-;;          ;; :cwd (file-name-directory "/app/inno-samba/sbin")
-;;          ;; :stop-on-entry t
-;;          ;; :setupCommands [
-;;          ;;        (:description "Enable pretty-printing for gdb"
-;;          ;;         :text "-enable-pretty-printing"
-;;          ;;         :ignoreFailures t)
-;;          ;;        (:description "Stop at main function"
-;;          ;;         :text "Break on main")
-;;          ;;        (:description "Don't detach forked processes"
-;;          ;;         :text "set detach-on-fork off")
-;;          ;;        (:description "Follow child process"
-;;          ;;         :text "set follow-fork-mode child")
-;;          ;;        (:description "Set Disassembly Flavor to Intel"
-;;          ;;         :text "-gdb-set disassembly-flavor intel"
-;;          ;;         :ignoreFailures t)]
-;;          ))
-
-
-;; (use-package dap-gdb-lldb
-;;   :after dap-mode
-;;   :demand
-;;   :custom
-;;   (dap-gdb-lldb-extension-version
-;;    (+github-latest-release "WebFreak001/code-debug" "0.27.0")))
-
-;; (use-package dap-cpptools
-;;   :after dap-mode
-;;   :demand
-;;   :custom
-;;   (dap-cpptools-extension-version
-;;    (+github-latest-release "microsoft/vscode-cpptools" "1.18.5")))
-
-
-;; (use-package dap-hydra
-;;   :defer t
-;;   :after dap-mode)
-
-;; (use-package dap-cpptools
-;;   :defer t
-;;   :hook ((c-mode c++-mode) . (lambda () (require 'dap-cpptools)))
-;;   :after dap-mode)
-
-;; (use-package dap-gdb-lldb
-;;   :after dap-mode
-;;   :hook ((c-mode c++-mode) . (lambda () (require 'dap-gdb-lldb))))
-
-;; (use-package dap-lldb
-;;   :after dap-mode
-;;   :hook ((c-mode c++-mode) . (lambda () (require 'dap-lldb)))
-;;   :config (progn
-;;             (setq
-;;              dap-lldb-debug-program
-;;              `(,(expand-file-name "~/.emacs.d/llvm-project/lldb/build/bin/lldb-vscode")))
-
-;;             (defun dap-cppdbg-gdb-attach (file)
-;;               (interactive "fPath to running executable: ")
-;;               (let ((pid (shell-command-to-string (format "pidof -s %s" (f-base file)))))
-;;                 (progn
-;;                   (message (format "%s" pid))
-;;                   (dap-debug (list :type "cppdbg"
-;;                                    :request "attach"
-;;                                    :program (expand-file-name file)
-;;                                    :MIMode "gdb"
-;;                                    :processId pid
-;;                                    :name "cpptools::Attach GDB")))))
-
-;;             (defun dap-cppdbg-lldb-attach (file)
-;;               (interactive "fPath to running executable: ")
-;;               (let ((pid (shell-command-to-string (format "pidof %s" (f-base file)))))
-;;                 (progn
-;;                   (message (format "%s" pid))
-;;                   (dap-debug (list :type "cppdbg"
-;;                                    :request "attach"
-;;                                    :program (expand-file-name file)
-;;                                    :MIMode "lldb"
-;;                                    :processId pid
-;;                                    :name "cpptools::Attach LLDB")))))
-
-;;             (defun dap-lldb-attach (file)
-;;               (interactive "fPath to running executable: ")
-;;               (let ((pid (shell-command-to-string (format "pidof %s" (f-base file)))))
-;;                 (progn
-;;                   (message (format "%s" pid))
-;;                   (dap-debug (list :type "lldb-vscode"
-;;                                    :request "attach"
-;;                                    :program (expand-file-name file)
-;;                                    :pid pid
-;;                                    :stopOnEntry nil
-;;                                    :name "LLDB::Attach")))))))
-
-
-;; (dap-register-debug-template "cpptools::Samba"
-;;     (list :type "cppdbg"
-;;           :request "launch"
-;;           :name "cpptools::Run Configuration"
-;;           :MIMode "gdb"
-;;           :program "/app/inno-samba/sbin/samba"
-;;           :stopOnEntry t
-;;           :cwd "/app/inno-samba/sbin"))
-
-;;  ;; --foreground --debuglevel=10 --no-process-group --debug-stdout
-
-
-
-;; (dap-register-debug-template
-;;    "gdb::dap::samba"
-;;     (list :type "gdb"
-;;           :request "launch"
-;;           :target "/app/inno-samba/sbin/samba"
-;;           :gdbpath "/usr/bin/gdb"
-;;           ;; :args ["--foreground" "--debuglevel=10" "--no-process-group" "--debug-stdout"]
-;;           ;; :stopOnEntry t
-;;           :cwd "/app/inno-samba/sbin"))
-
-
-;; (setq evil-want-integration t)
-
-
-;; (defun my/activate-english-input ()
-;;   "Switch to English layout when certain keys are pressed."
-;;   (interactive)
-;;   (set-input-method "english"))
-;; (add-hook 'minibuffer-setup-hook 'my/activate-english-input)
-
-(setq evil-escape-unordered-key-sequence t)
-
-;; (use-package unimpaired-mode
-;;   :ensure t
-;;   :config
-;;   (unimpaired-mode 1))

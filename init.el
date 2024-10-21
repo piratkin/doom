@@ -21,11 +21,11 @@
        ;;layout            ; auie,ctsrnm is the superior home row
 
        :completion
-       company           ; the ultimate code completion backend
-       (corfu +orderless)  ; complete with cap(f), cape and a flying feather!
+       company             ; the ultimate code completion backend
+       ;; (corfu +orderless)  ; complete with cap(f), cape and a flying feather!
        ;;helm              ; the *other* search engine for love and life
-       ;;ido               ; the other *other* search engine...
-       ;;ivy               ; a search engine for love and life
+       ;; ido               ; the other *other* search engine...
+       ;; ivy               ; a search engine for love and life
        vertico             ; the search engine of the future
 
        :ui
@@ -85,7 +85,7 @@
        grammar           ; tasing grammar mistake every you make
 
        :tools
-       ;;ansible
+       ;; ansible
        ;;biblio            ; Writes a PhD for you (citation needed)
        ;;collab            ; buffers with friends
        (debugger +lsp)          ; FIXME stepping through code, to help you add bugs
@@ -108,7 +108,7 @@
 
        :os
        (:if (featurep :system 'macos) macos)  ; improve compatibility with macOS
-       tty               ; improve the terminal Emacs experience
+       (tty +osc)              ; improve the terminal Emacs experience
 
        :lang
        ;;agda              ; types of types of types of types...

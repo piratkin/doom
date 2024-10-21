@@ -49,15 +49,10 @@
 ;; ...Or *all* packages (NOT RECOMMENDED; will likely break things)
 ;; (unpin! t)
 
-;; (package! ace-window)
 (package! ace-jump-mode)
 (package! go-translate)
-
-;; (package! go-translate
-;;   :config
-;;   (setq go-translate-base-url "https://translate.google.com"
-;;         go-translate-local-language "ru"  ;; Локальный язык перевода (ваш язык)
-;;         go-translate-targets '("en")))    ;; Целевой язык перевода (например, английский)
-
-;; (package! gdb-mi)
-;; (package! realgud)
+;; (package! dap-ui)
+(package! company-lsp)
+(package! company-box)
+(package! dap-mode)
+(package! popup)

@@ -1,6 +1,7 @@
 (setq-default
  user-full-name "Sergey Piratkin"
  user-mail-address "piratkin@tut.by"
+ enable-local-variables nil
  org-directory "~/org/")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -41,7 +42,9 @@
 (use-package! frame
   :ensure t
   :hook
-  (window-setup . toggle-frame-maximized))
+  (window-setup . toggle-frame-maximized)
+  :custom
+  (window-divider-default-places t))
 
 (use-package! window
   :ensure nil
@@ -81,26 +84,34 @@
 
 (use-package! go-translate
   :ensure t
-  :custom
-  (gt-translate-list
-   '(("en" "ru")
-     ("ru" "en")))
   :config
   (map!
    :leader
    (:prefix
     ("l" . "Translate")
     (:prefix ("g" . "Google")
-     :desc "overlay"  "o" #'tr-google-overlay
-     :desc "buffer"   "b" #'tr-google-buffer
-     :desc "insert"   "i" #'tr-google-insert
-     :desc "killring" "y" #'tr-google-kill-ring)
+     :desc "overlay"
+     "o" #'tr-google-overlay
+     :desc "buffer"
+     "b" #'tr-google-buffer
+     :desc "insert"
+     "i" #'tr-google-insert
+     :desc "killring"
+     "y" #'tr-google-kill-ring)
     (:prefix ("b" . "Bing")
-     :desc "overlay"  "o" #'tr-bing-overlay
-     :desc "buffer"   "b" #'tr-bing-buffer
-     :desc "insert"   "i" #'tr-bing-insert
-     :desc "killring" "c" #'tr-bing-kill-ring)))
+     :desc "overlay"
+     "o" #'tr-bing-overlay
+     :desc "buffer"
+     "b" #'tr-bing-buffer
+     :desc "insert"
+     "i" #'tr-bing-insert
+     :desc "killring"
+     "c" #'tr-bing-kill-ring)))
   :init
+  (setq-default
+   gt-translate-list
+   '(("en" "ru")
+     ("ru" "en")))
   (defun tr-it (engine render)
     (setq
       gt-default-translator
@@ -144,12 +155,12 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(use-package! doom-keybinds
-  :ensure t
-  :bind
-  (("C-SPC" . doom/escape))
-  :custom
-  (doom-esape-hook))
+;; (use-package! doom-keybinds
+;;   :ensure t
+;;   :bind
+;;   (("C-SPC" . doom/escape))
+;;   :custom
+;;   (doom-esape-hook))
 
 (use-package! doom-ui
   :ensure t
@@ -203,7 +214,7 @@
      '(dap-ui-verified-breakpoint-face
        ((t (:background "#100505"))))))
   (set-face-background 'mode-line "gray20")
-  (set-face-foreground 'mode-line "white")
+  (set-face-foreground 'mode-line "darkgrey")
   (set-face-background 'vertical-border "gray10")
   (set-face-background 'mode-line-inactive "gray10")
   (set-face-foreground 'mode-line-inactive "brightblack"))
@@ -248,18 +259,42 @@
 
 (use-package! evil-escape
   :after evil
-  :ensure t
   :config
   (setq-default
    evil-escape-delay nil
-   evil-escape-key-sequence nil))
+   evil-escape-key-sequence nil)
+  :ensure t)
 
 (use-package! evil-commands
   :ensure t
   :after evil
+  :init
+  (map!
+   :leader
+   (:prefix
+    ("w" . "Window")
+    "0" nil "1" nil "2" nil "3" nil "4" nil
+    "5" nil "6" nil "7" nil "8" nil "9" nil
+    "+" nil "-" nil "b" nil "f" nil "p" nil
+    "w" nil "W" nil
+    "C-q" nil "C-=" nil "C-_" nil "C-w" nil
+    "C-c" nil "C-f" nil "C-j" nil "C-k" nil
+    "C-l" nil "C-n" nil "C-o" nil "C-p" nil
+    "C-b" nil "C-h" nil "C-r" nil "C-s" nil
+    "C-t" nil "C-u" nil "C-v" nil "C-x" nil
+    "C-S-h" nil "C-S-j" nil "C-S-k" nil
+    "C-S-l" nil "C-S-r" nil "C-S-s" nil
+    "C-S-w" nil))
   :bind
+  ("C-j" . evil-scroll-down)
+  ("C-k" . evil-scroll-up)
+  ("C-h" . evil-window-top)
+  ("C-l" . evil-window-bottom)
+  ("C-о" . evil-scroll-down)
+  ("C-л" . evil-scroll-up)
+  ("C-р" . evil-window-top)
+  ("C-д" . evil-window-bottom)
   (:map evil-normal-state-map
-   ;; ("K" . nil) ("Л" . nil)
    ("з" . evil-paste-after)
    ("н" . evil-yank)
    ("Ф" . evil-append-line)
@@ -273,25 +308,8 @@
    ("щ" . evil-open-below)
    ("О" . evil-join)
    ;; :map evil-insert-state-map
-   ;; ("K" . nil) ("Л" . nil)
-   ;; :map evil-visual-state-map
-   ;; ("K" . nil) ("Л" . nil)
+   ;; ("RET" . newline-and-indent)
    :map evil-motion-state-map
-   ;; ("K" . nil) ("Л" . nil)
-   ("C-j" . evil-scroll-down)
-   ("C-k" . evil-scroll-up)
-   ("C-h" . evil-window-top)
-   ("C-m" . evil-window-middle)
-   ("C-l" . evil-window-bottom)
-   ("C-о" . evil-scroll-down)
-   ("C-л" . evil-scroll-up)
-   ("C-р" . evil-window-top)
-   ("C-ь" . evil-window-middle)
-   ("C-д" . evil-window-bottom)
-   ;; ("H" . evil-window-top)
-   ;; ("L" . evil-window-bottom)
-   ;; ("Р" . evil-window-top)
-   ;; ("Д" . evil-window-bottom)
    ("ц" . evil-forward-word-begin)
    ("и" . evil-backward-word-begin)
    ("у" . evil-forward-word-end)
@@ -308,22 +326,10 @@
    :leader
    (:prefix
     ("w" . "Window")
-    "]" #'evil-window-increase-height
-    "[" #'evil-window-decrease-height
-    ">" #'evil-window-increase-width
-    "<" #'evil-window-decrease-width
     "k" #'evil-window-up
     "j" #'evil-window-down
     "h" #'evil-window-left
     "l" #'evil-window-right)))
-
-(use-package! evil-collection
-  :after evil
-  :ensure t
-  ;; :config
-  ;; (setq evil-collection-setup-minibuffer t)
-  ;; (evil-collection-init)
-  )
 
 (use-package! evil-states
   :ensure t
@@ -355,35 +361,20 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(use-package! general
-  :ensure t
-  :config
-  (map!
-   :leader
-   (:prefix
-    ("w" . "Window")
-    "0" nil "1" nil "2" nil "3" nil "4" nil
-    "5" nil "6" nil "7" nil "8" nil "9" nil
-    "+" nil "-" nil "b" nil "f" nil "p" nil
-    "w" nil "W" nil
-    "C-q" nil "C-=" nil "C-_" nil "C-w" nil
-    "C-c" nil "C-f" nil "C-j" nil "C-k" nil
-    "C-l" nil "C-n" nil "C-o" nil "C-p" nil
-    "C-b" nil "C-h" nil "C-r" nil "C-s" nil
-    "C-t" nil "C-u" nil "C-v" nil "C-x" nil
-    "C-S-h" nil "C-S-j" nil "C-S-k" nil
-    "C-S-l" nil "C-S-r" nil "C-S-s" nil
-    "C-S-w" nil
-    )))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 (use-package! repeat
   :ensure t
   :hook
   (dap-mode . repeat-mode)
   (evil-mode . repeat-mode)
   :init
+  (defvar win-repeat-map
+    (let ((map (make-sparse-keymap)))
+      (define-key map "]" 'evil-window-increase-height)
+      (define-key map "[" 'evil-window-decrease-height)
+      (define-key map "}" 'evil-window-increase-width)
+      (define-key map "{" 'evil-window-decrease-width)
+       map)
+    "Keymap for repeating Window commands.")
   (defvar dap-repeat-map
     (let ((map (make-sparse-keymap)))
       (define-key map "n" 'dap-next)
@@ -394,20 +385,38 @@
       (define-key map "t" 'dap-switch-thread)
       (define-key map "f" 'dap-switch-stack-frame)
       (define-key map "p" 'dap-switch-session)
-      (define-key map "q" 'dap-disconnect)
-      map)
+      (define-key map "q" 'dap-disconnect) map)
     "Keymap for repeating DAP commands.")
   :custom
   (repeat-exit-key "<escape>")
   :config
-  (defmacro set-repeat-map (funcs)
+  (map!
+   :leader
+   (:prefix
+    ("w" . "Window")
+    "]" #'evil-window-increase-height
+    "[" #'evil-window-decrease-height
+    "}" #'evil-window-increase-width
+    "{" #'evil-window-decrease-width))
+  (defmacro set-win-repeat-map (funcs)
+    `(dolist (func ',funcs)
+       (put func 'repeat-map 'win-repeat-map)))
+  (defmacro set-dap-repeat-map (funcs)
     `(dolist (func ',funcs)
        (put func 'repeat-map 'dap-repeat-map)))
-  (set-repeat-map
+  (set-win-repeat-map
+   (evil-window-increase-height
+    evil-window-decrease-height
+    evil-window-increase-width
+    evil-window-decrease-width
+    evil-window-up
+    evil-window-down
+    evil-window-left
+    evil-window-right))
+  (set-dap-repeat-map
    (dap-next
     dap-step-in
-    dap-step-out
-    dap-continue
+    dap-step-out dap-continue
     dap-breakpoint-toggle
     dap-switch-thread
     dap-switch-stack-frame
@@ -468,27 +477,49 @@
   :after dap-mode
   :hook
   (dap-mode . dap-ui-mode)
-  :custom
-  (dap-ui-controls-mode nil)
-  (dap-ui-many-windows-mode nil)
-  (dap-ui-variable-length 255)
+  :init
+  (setq-default
+   dap-ui-buffer-configurations
+   `((,dap-ui--locals-buffer .
+       ((side . right) (slot . 1)
+      (window-width . 0.25)))
+     (,dap-ui--expressions-buffer .
+       ((side . right) (slot . 2)
+      (window-width . 0.25)))
+     (,dap-ui--sessions-buffer .
+       ((side . right) (slot . 3)
+      (window-width . 0.25)))
+     (,dap-ui--breakpoints-buffer .
+       ((side . left) (slot . 2)
+      (window-width . 0.25)))
+     (,dap-ui--debug-window-buffer .
+       ((side . bottom) (slot . 3)
+      (window-height . 0.15)))
+     (,dap-ui--repl-buffer .
+       ((side . bottom) (slot . 1)
+      (window-height . 0.15)))))
+  :config
+  ;; (evil-define-key 'insert dap-ui-repl-mode-map
+  ;;   (kbd "RET") #'comint-send-input)
+  (setq-default
+   dap-ui-controls-mode t
+   dap-ui-many-windows-mode t
+   dap-ui-variable-length 255)
   :ensure t)
 
 (use-package! dap-mode
-  :custom
-  (doom-debug-mode t)
-  (gdb-many-windows nil)
-  (dap-auto-configure-mode nil)
-  (dap-auto-show-output nil)
-  (dap-print-io nil)
-  (tooltip-mode nil)
-  (dap-tooltip-mode nil)
-  (dap-ui-buffer-configurations
-   '((nil . nil)))
-  (dap-auto-configure-features
-   '(locals sessions repl))
   :config
-  (dap-mode 1)
+  (setq-default
+   doom-debug-mode t
+   gdb-show-main t
+   gdb-many-windows t
+   dap-auto-show-output t
+   dap-print-io t
+   tooltip-mode nil
+   dap-tooltip-mode nil
+   ;; dap-auto-configure-mode nil
+   dap-auto-configure-features
+   '(locals sessions))
   (map! :leader
    (:prefix ("d" . "Debug")
     "d" #'dap-debug
@@ -505,234 +536,42 @@
     "t" #'dap-switch-thread
     "f" #'dap-switch-stack-frame
     "p" #'dap-switch-session
-    ;; "k" #'dap-break
-    ;; "r" #'dap-restart
     "Q" #'dap-terminated-debug
     (:prefix ("u" . "Ui")
-     "U" #'dap-ui-repl
+     "r" #'dap-ui-repl-company
+     "p" #'dap-ui-repl-company-prefix
+     "p" #'dap-ui-repl-process
      "l" #'dap-ui-locals
-     ;; "b" #'dap-breakpoint-list
-     ;; "r" #'dap-ui-restart
-     ;; "w" #'dap-ui-watch
-     ;; "s" #'dap-ui-session
-     ;; "i" #'dap-ui-inspect
+     "r" #'dap-ui-restart-frame
+     "w" #'dap-ui-hide-many-windows
+     "W" #'dap-ui-show-many-windows
+     "s" #'dap-ui-session
+     "b" #'dap-ui-breakpoints
      "h" #'dap-hydra)))
+  (let ((file-path (expand-file-name
+     ".dap-env.el" doom-private-dir)))
+    (when (file-exists-p file-path)
+      (load-file file-path)))
+  (dap-mode 1)
   :ensure t)
 
-;; DAP_ENDPOINT = host:port
-;; DAP_CWD_PATH = $PWD
-;; DAP_APP_PATH = a.exe
-;; DAP_DBG_PATH = /usr/bin/gdb
-;; DAP_APP_ARGS = --debuglevel=10
-;; DAP_DBG_ARGS = --silent
-;; DAP_DBG_CMDS = break main
-;; DAP_ENV_VARS =
-
 (use-package! dap-python
-  :disabled
   :after dap-mode
-  :if (executable-find "python3")
-  ;; :hook
-  ;; (python-mode . dap-python-mode)
-  :config
-  (dap-unregister-debug-template
-   "Python::Run Configuration")
-
-  ;; (dap-register-debug-template
-  ;;  "python::launch"
-  ;;  '(:type "python"
-  ;;    :args ""
-  ;;    :cwd "${workspaceFolder}"
-  ;;    :program nil
-  ;;    :module nil
-  ;;    :justMyCode t
-  ;;    :request "launch"))
-
-  ;; (dap-register-debug-template
-  ;;  "python::attach"
-  ;;  '(:type "python"
-  ;;    :processId "${command:pickProcess}"
-  ;;    :justMyCode t
-  ;;    :request "attach"))
-
-  ;; (dap-python-setup t)
+  ;; :config
+  ;; (dap-python-setup)
   :ensure t)
 
 (use-package! dap-cpptools
-  :disabled
   :after dap-mode
-  :if (executable-find "gdb")
-  ;; :hook
-  ;; (c-mode-common . dap-cpptools-mode)
-  :config
-  (dap-unregister-debug-template
-   "CppTools::Run Configuration")
-  ;;
-  ;; (dap-register-debug-template
-  ;;  "dap::cpptools::launch::simple"
-  ;;  `(:type "cppdbg"
-  ;;    :request "launch"
-  ;;    :program
-  ;;    ,(getenv "DAP_APP")
-  ;;    :cwd
-  ;;    ,(getenv "DAP_CWD")
-  ;;    :MIMode "gdb"
-  ;;    :miDebuggerPath
-  ;;    ,(getenv "DAP_DBG")
-  ;;    :stopAtEntry t))
-  ;; ;;
-  ;; (dap-register-debug-template
-  ;;  "dap::cpptools::launch::default"
-  ;;  `(:type "cppdbg"
-  ;;    :request "launch"
-  ;;    :program
-  ;;    ,(getenv "DAP_APP_PATH")
-  ;;    :cwd
-  ;;    ,(getenv "DAP_CWD_PATH")
-  ;;    :MIMode "gdb"
-  ;;    :targetArchitecture "x86_64"
-  ;;    :miDebuggerPath
-  ;;    ,(getenv "DAP_DBG_PATH")
-  ;;    :miDebuggerArgs
-  ;;    ,(getenv "DAP_GDB_ARGS")
-  ;;    :externalConsole nil
-  ;;    :justMyCode t)
-  ;;    ;; :useExtendedRemote t
-  ;;    ;; :miDebuggerServerAddress
-  ;;    ;; "localhost:1234"
-  ;;    ;; :postRemoteConnectCommands
-  ;;    :args ,(vconcat (split-string
-  ;;       (getenv "D AP_APP_ARGS")))
-  ;;    :stopAtEntry t)
-  ;;
-  ;; (dap-register-debug-template
-  ;;  "cppgdb::python::pid::attach"
-  ;;  '(:name "cppgdb::python::pid::attach"
-  ;;    :type "cppgdb"
-  ;;    :request "attach"
-  ;;    :program "/usr/bin/python3"
-  ;;    :additionalSOLibSearchPath
-  ;;    (concat
-  ;;     "/usr/local/samba/lib/python3.7/site-packages/samba;"
-  ;;     "/usr/local/samba/lib;"
-  ;;     "/usr/local/samba/lib/ldb")
-  ;;    :processId "${command:pickProcess}"
-  ;;    :MIMode "gdb"
-  ;;    :justMyCode t
-  ;;    :printCalls t))
-
-  ;; (dap-cpptools-setup t)
+  ;; :config
+  ;; (dap-cpptools-setup)
   :ensure t)
 
 (use-package! dap-gdb-lldb
   :after dap-mode
-  :if (or (executable-find "gdb")
-          (executable-find "lldb"))
-  :init
-  (dap-register-debug-template
-   "dap::gdb_lldb::launch::simple"
-   `(:type "gdb"
-     :request "launch"
-     :target ,(getenv "DAP_APP_PATH")
-     :cwd ,(getenv "DAP_CWD_PATH")
-     :args ,(vconcat (split-string
-       (getenv "DAP_APP_ARGS")))
-     :autorun ,(vconcat
-       (mapcar 'string-trim
-         (split-string (getenv
-           "DAP_DBG_CMDS") ":" t)))
-     :debugger_args
-         ,(vconcat (mapcar 'string-trim
-           (split-string (getenv
-         "DAP_DBG_ARGS"))))
-     :env ,(vconcat (split-string
-       (getenv "DAP_ENV_VARS")))))
-  (dap-register-debug-template
-   "dap::gdbserver::attach::simple"
-   `(:type "gdbserver"
-     :request "attach"
-     :target ,(getenv "DAP_ENDPOINT")
-     :cwd ,(getenv "DAP_CWD_PATH")
-     :args ,(vconcat (split-string
-       (getenv "DAP_APP_ARGS")))
-     :autorun ,(vconcat
-       (mapcar 'string-trim
-         (split-string (getenv
-           "DAP_DBG_CMDS") ":" t)))
-     :debugger_args
-     ,(vconcat (mapcar 'string-trim
-       (split-string (getenv
-         "DAP_DBG_ARGS"))))
-     :env ,(vconcat (split-string
-       (getenv "DAP_ENV_VARS")))))
   :config
   (dap-gdb-lldb-setup)
   :ensure t)
 
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; (use-package! evil-macro
-;;   :ensure t)
-
-;; (setenv "DAP_ENV_VARS" "PATH=/app/inno-samba/sbin:/app/inno-samba/bin:$PATH")
-
-     ;; :request "attach"
-     ;; :gdbpath "gdb"
-;; (use-package! dap-gdb
-;;   :disabled
-;;   :after dap-mode
-;;   :if (executable-find "gdb")
-;;   :config
-;;   ;; (dap-register-debug-template
-;;   ;;  "dap::gdbserver::attach::simple"
-;;   ;;  `(:type "gdbserver"
-;;   ;;    :request "attach"
-;;   ;;    :executable
-;;   ;;    ,(getenv "DAP_APP_PATH")
-;;   ;;    :debugger_args
-;;   ;;    ,(vconcat (mapcar 'string-trim
-;;   ;;      (split-string (getenv
-;;   ;;        "DAP_DBG_ARGS"))))
-;;   ;;    :env ,(vconcat (split-string
-;;   ;;       (getenv "DAP_APP_ARGS")))
-;;   ;;    :gdbpath "gdb"
-;;   ;;    :cwd ,(getenv "DAP_CWD_PATH")
-;;   ;;    :target
-;;   ;;    ,(getenv "DAP_ENDPOINT")
-;;   ;;    :autorun
-;;   ;;    ,(vconcat (mapcar 'string-trim
-;;   ;;      (split-string (getenv
-;;   ;;        "DAP_DBG_CMDS") ":" t)))
-;;   ;;    :valuesFormatting "prettyPrinters"
-;;   ;;    :showDevDebugOutput nil
-;;   ;;    :printCalls nil
-;;   ;;    :remote t))
-;;   ;; (dap-gdb-setup t)
-;;   :ensure t)
-
-;; (use-package! dap-lldb
-;;   :disabled
-;;   :after dap-mode
-;;   :if (executable-find "lldb")
-;;   :config
-;;   (dap-lldb-setup)
-;;   :ensure t)
-
-
-
-  ;; (dap-register-debug-template
-  ;;  "dap::gdbserver::attach::simple"
-  ;;  `(:type "gdb"
-  ;;    :request "lounch"
-  ;;    :target "/app/inno-samga/sbin/samba"
-  ;;    :cwd "/home/user/Work"
-  ;;    :executable "/app/inno-samga/sbin/samba"
-  ;;    :debugger_args []
-  ;;    :env []
-  ;;    :gdbpath "/usr/bin/gdb"
-  ;;    :autorun ["break main"]
-  ;;    :showDevDebugOutput nil
-  ;;    :valuesFormatting "prettyPrinters"
-  ;;    :remote t
-  ;;    :printCalls nil
-  ;;    ))
